@@ -1,8 +1,8 @@
 # Agentic NIC Dataplane Lab
 
-`Agentic-NIC-Dataplane-Lab` is a Linux-first reference repo for designing, building, and benchmarking a split NIC dataplane for agentic AI systems.
+`Agentic-NIC-Dataplane-Lab` is a Linux-first reference repo for designing, building, and benchmarking a split NIC dataplane for agentic AI systems, with an explicit path toward `bounded autonomous NIC behavior`.
 
-The repo is opinionated about one thing: agentic AI is not only a model problem. It is a queueing, copy-avoidance, packet-steering, and east-west transport problem. The goal here is to make those tradeoffs concrete with architecture notes, Linux tuning guidance, compatibility tables, and runnable starter code for the three traffic classes that matter most.
+The repo is opinionated about one thing: agentic AI is not only a model problem. It is a queueing, copy-avoidance, packet-steering, east-west transport, and local-control problem. The goal here is to make those tradeoffs concrete with architecture notes, Linux tuning guidance, compatibility tables, starter code, and a stronger systems model for how an autonomous NIC dataplane could operate safely.
 
 ## Repo Description
 
@@ -11,6 +11,14 @@ This project explores a `tri-path` host networking model for agentic AI clusters
 - `Path A`: kernel TCP for the majority of agent RPC, improved with `busy_poll`, queue affinity, and `io_uring` zero-copy receive where supported
 - `Path B`: `XDP` + `AF_XDP` for selected hot queues that need lower packet overhead and stronger queue-to-core control
 - `Path C`: `RDMA` for bulk east-west movement such as state sync, checkpoint transfer, shard-to-shard movement, and GPU-adjacent feeds
+
+It also starts to define a `layered agentic NIC architecture`:
+
+- an `Intent Layer` where the host expresses goals rather than register-level tweaks
+- a bounded `Agent Layer` that proposes local dataplane adjustments
+- a deterministic `Guardian Layer` that enforces safety and connectivity invariants
+- an `Audit Layer` with hardware-isolated reasoning logs for dataplane mutations
+- a `Tenant Quota Model` so local optimization does not destroy fairness
 
 The intended audience is:
 
@@ -28,6 +36,10 @@ The intended audience is:
 - `RDMA`, queue pairs, memory registration, and bulk transport
 - Intel `ice` / `irdma` and Broadcom `bnxt_en` / `bnxt_re`
 - benchmark design for agent-shaped workloads
+- bounded autonomous NIC control
+- deterministic guardrails and fail-safe policy
+- hardware-isolated reasoning logs
+- multi-tenant agent quotas and fairness
 
 ## Architecture
 
@@ -71,11 +83,16 @@ This repo is intentionally in `early-lab` form:
 - the benchmark harness accepts real arguments and emits JSON metadata
 - the code under `src/` is still starter code, not production dataplane code
 - the docs are detailed enough to orient a contributor and define the next work
+- the conceptual architecture now covers not just transport choice, but how local autonomy, safety, and auditability could fit into a SmartNIC-class system
 
 ## Repo Layout
 
 - [`./BUILDING.md`](./BUILDING.md)
 - [`./docs/reference-architecture.md`](./docs/reference-architecture.md)
+- [`./docs/agentic-nic-architecture.md`](./docs/agentic-nic-architecture.md)
+- [`./docs/safety-and-guardrails.md`](./docs/safety-and-guardrails.md)
+- [`./docs/reasoning-log-design.md`](./docs/reasoning-log-design.md)
+- [`./docs/multi-tenant-agent-quotas.md`](./docs/multi-tenant-agent-quotas.md)
 - [`./docs/kernel-driver-tuning.md`](./docs/kernel-driver-tuning.md)
 - [`./docs/benchmark-plan.md`](./docs/benchmark-plan.md)
 - [`./docs/compatibility-matrix.md`](./docs/compatibility-matrix.md)
@@ -134,3 +151,4 @@ It is still intentionally conservative: if the required generator tool is missin
 3. Extend the `io_uring` sample from setup-only into a complete `RECV_ZC` notification flow.
 4. Flesh out the RDMA path with full `RESET -> INIT -> RTR -> RTS` state transitions and peer exchange helpers.
 5. Add workload generators and result aggregation to the benchmark harness.
+6. Formalize the `Intent -> Agent -> Guardian -> Dataplane -> Audit` model into a sharper design and possible patent memo.

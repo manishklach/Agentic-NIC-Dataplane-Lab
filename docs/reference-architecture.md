@@ -1,6 +1,6 @@
 # Reference Architecture
 
-This repo recommends a `tri-path` Linux networking architecture for agentic AI clusters.
+This repo recommends a `tri-path` Linux networking architecture for agentic AI clusters, and extends that model toward a bounded `agentic NIC` control plane.
 
 ## Problem Statement
 
@@ -17,6 +17,13 @@ One transport path rarely fits all of those shapes well. The architecture here s
 ## Design Goal
 
 Keep the kernel where it helps, bypass it where it hurts, and reserve RDMA for the flows that can actually use it well.
+
+The broader goal is stronger than transport selection alone:
+
+- move selected decisions closer to the NIC
+- keep those decisions bounded by deterministic safety rules
+- expose an audit trail for why the dataplane changed
+- preserve tenant fairness while allowing local optimization
 
 ## Path A: Kernel RPC
 
@@ -131,6 +138,22 @@ flowchart LR
     B --> H["Hot Gateways / Routers / Schedulers"]
     C --> S["State Sync / Checkpoints / GPU Feeders"]
 ```
+
+## Agentic NIC Extension
+
+On top of the three transport paths, the repo proposes a higher-level control model:
+
+- `Intent Layer`: the host specifies goals such as prioritization, fairness, or protection targets
+- `Agent Layer`: the NIC-local logic proposes bounded adjustments
+- `Guardian Layer`: deterministic checks approve, rewrite, or reject actions
+- `Audit Layer`: an append-only reasoning log records observed state, proposed actions, and applied changes
+
+That model is described further in:
+
+- [`./agentic-nic-architecture.md`](./agentic-nic-architecture.md)
+- [`./safety-and-guardrails.md`](./safety-and-guardrails.md)
+- [`./reasoning-log-design.md`](./reasoning-log-design.md)
+- [`./multi-tenant-agent-quotas.md`](./multi-tenant-agent-quotas.md)
 
 ## Driver Recommendations
 
