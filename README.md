@@ -1,6 +1,6 @@
-# Agentic Dataplane Lab
+# Agentic NIC Dataplane Lab
 
-`agentic-dataplane-lab` is a Linux-first reference repo for building and benchmarking a split data-plane architecture for agentic AI systems.
+`Agentic-NIC-Dataplane-Lab` is a Linux-first reference repo for building and benchmarking a split data-plane architecture for agentic AI systems.
 
 The core idea is simple:
 
@@ -51,13 +51,13 @@ Use `RDMA` for bulk state movement, vector/index sync, checkpoint transfer, GPU-
 
 ## Repo Layout
 
-- [`docs/reference-architecture.md`](C:/Users/ManishKL/Documents/Playground/agentic-dataplane-lab/docs/reference-architecture.md)
-- [`docs/kernel-driver-tuning.md`](C:/Users/ManishKL/Documents/Playground/agentic-dataplane-lab/docs/kernel-driver-tuning.md)
-- [`docs/benchmark-plan.md`](C:/Users/ManishKL/Documents/Playground/agentic-dataplane-lab/docs/benchmark-plan.md)
-- [`diagrams/tri-path-agentic-dataplane.mmd`](C:/Users/ManishKL/Documents/Playground/agentic-dataplane-lab/diagrams/tri-path-agentic-dataplane.mmd)
-- [`src/af_xdp/main.c`](C:/Users/ManishKL/Documents/Playground/agentic-dataplane-lab/src/af_xdp/main.c)
-- [`src/rdma/verbs_ping.c`](C:/Users/ManishKL/Documents/Playground/agentic-dataplane-lab/src/rdma/verbs_ping.c)
-- [`scripts/benchmark-matrix.sh`](C:/Users/ManishKL/Documents/Playground/agentic-dataplane-lab/scripts/benchmark-matrix.sh)
+- [`docs/reference-architecture.md`](C:/Users/ManishKL/Documents/Playground/Agentic-NIC-Dataplane-Lab/docs/reference-architecture.md)
+- [`docs/kernel-driver-tuning.md`](C:/Users/ManishKL/Documents/Playground/Agentic-NIC-Dataplane-Lab/docs/kernel-driver-tuning.md)
+- [`docs/benchmark-plan.md`](C:/Users/ManishKL/Documents/Playground/Agentic-NIC-Dataplane-Lab/docs/benchmark-plan.md)
+- [`diagrams/tri-path-agentic-dataplane.mmd`](C:/Users/ManishKL/Documents/Playground/Agentic-NIC-Dataplane-Lab/diagrams/tri-path-agentic-dataplane.mmd)
+- [`src/af_xdp/main.c`](C:/Users/ManishKL/Documents/Playground/Agentic-NIC-Dataplane-Lab/src/af_xdp/main.c)
+- [`src/rdma/verbs_ping.c`](C:/Users/ManishKL/Documents/Playground/Agentic-NIC-Dataplane-Lab/src/rdma/verbs_ping.c)
+- [`scripts/benchmark-matrix.sh`](C:/Users/ManishKL/Documents/Playground/Agentic-NIC-Dataplane-Lab/scripts/benchmark-matrix.sh)
 
 ## Vendor Recommendation
 
