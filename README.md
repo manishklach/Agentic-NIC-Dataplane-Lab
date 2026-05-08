@@ -93,6 +93,7 @@ This repo is intentionally in `early-lab` form:
 - [`./docs/agentic-nic-architecture.md`](./docs/agentic-nic-architecture.md)
 - [`./docs/safety-and-guardrails.md`](./docs/safety-and-guardrails.md)
 - [`./docs/reasoning-log-design.md`](./docs/reasoning-log-design.md)
+- [`./docs/audit-layer-threat-model.md`](./docs/audit-layer-threat-model.md)
 - [`./docs/multi-tenant-agent-quotas.md`](./docs/multi-tenant-agent-quotas.md)
 - [`./docs/kernel-driver-tuning.md`](./docs/kernel-driver-tuning.md)
 - [`./docs/benchmark-plan.md`](./docs/benchmark-plan.md)
@@ -104,6 +105,8 @@ This repo is intentionally in `early-lab` form:
 - [`./src/rdma/verbs_ping.c`](./src/rdma/verbs_ping.c)
 - [`./scripts/benchmark-matrix.sh`](./scripts/benchmark-matrix.sh)
 - [`./tools/af_xdp_load.sh`](./tools/af_xdp_load.sh)
+- [`./tools/bpftrace/guardian_preemption.bt`](./tools/bpftrace/guardian_preemption.bt)
+- [`./tools/bpftrace/guardian_tail_latency_guard.bt`](./tools/bpftrace/guardian_tail_latency_guard.bt)
 - [`./tools/plot_e810_baseline.py`](./tools/plot_e810_baseline.py)
 - [`./results/e810-baseline-2026-05-08.json`](./results/e810-baseline-2026-05-08.json)
 
@@ -149,6 +152,12 @@ Example:
 It is still intentionally conservative: if the required generator tool is missing, it fails loudly instead of pretending a benchmark ran.
 
 The repo also now includes an illustrative baseline artifact at [`./results/e810-baseline-2026-05-08.json`](./results/e810-baseline-2026-05-08.json) plus a plotting helper at [`./tools/plot_e810_baseline.py`](./tools/plot_e810_baseline.py) so the benchmark story is grounded in a reusable result format.
+
+The next release blockers are now called out more explicitly in the docs:
+
+- prove Path B is not worse than Path A for sub-`512 B` RPCs
+- show guardian intervention does not violate tail-latency SLOs
+- define exactly who can read the reasoning logs and under what trust model
 
 ## Priority Next Work
 

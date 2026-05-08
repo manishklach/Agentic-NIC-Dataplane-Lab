@@ -53,6 +53,23 @@ The repo should explicitly assume a fallback mode that:
 - keeps traffic on safe baseline rules
 - continues emitting audit events so operators know fallback occurred
 
+## Tail-Latency Protection Requirement
+
+The guardian should not only prevent catastrophic actions. It should also avoid becoming the source of a latency regression itself.
+
+That means the repo should eventually demonstrate:
+
+- guardian preemption happens before queue collapse, not after
+- high-priority service classes keep their SLO envelope during intervention
+- repeated rewrites or rejections do not create oscillation or scheduler thrash
+
+The practical validation path should include `bpftrace` or equivalent tracing around:
+
+- guardian wakeups
+- dataplane mutation attempts
+- fail-safe transitions
+- run-queue delay for protected services
+
 ## Implementation Shapes
 
 Possible enforcement surfaces include:

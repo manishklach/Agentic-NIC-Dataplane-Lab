@@ -1,0 +1,41 @@
+#!/usr/bin/env bpftrace
+
+/*
+ * Illustrative script for correlating guardian intervention with latency
+ * pressure. Replace the placeholder process names and probes with the actual
+ * service and guardian implementation as the repo evolves.
+ */
+
+BEGIN
+{
+  printf("guardian tail-latency guard tracer started\n");
+}
+
+tracepoint:sched:sched_wakeup
+/comm == "agent-gateway"/
+{
+  @wake_ts[tid] = nsecs;
+}
+
+tracepoint:sched:sched_switch
+/@wake_ts[args->next_pid]/
+{
+  $delta_us = (nsecs - @wake_ts[args->next_pid]) / 1000;
+  @runq_delay_us = hist($delta_us);
+  delete(@wake_ts[args->next_pid]);
+}
+
+tracepoint:sched:sched_wakeup
+/comm == "guardiand"/
+{
+  @guardian_interventions = count();
+}
+
+interval:s:10
+{
+  printf("\n--- guardian latency guard snapshot ---\n");
+  print(@guardian_interventions);
+  print(@runq_delay_us);
+  clear(@guardian_interventions);
+  clear(@runq_delay_us);
+}

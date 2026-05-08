@@ -22,6 +22,12 @@ The point of the comparison is not to crown one universal winner. It is to ident
 - focus: tail latency and CPU cost
 - likely path winner: kernel TCP, then `io_uring` where supported
 
+Release blocker for wider claims:
+
+- explicitly prove `AF_XDP` is not slower than Path A for sub-`512 B` RPCs before recommending it for hot small-message services
+- record `XDP` redirect overhead and compare it to socket-path wakeup and copy cost
+- treat `64 B`, `128 B`, `256 B`, and `512 B` as mandatory comparison points, not optional extras
+
 ### Class B: Retrieval / Memory Service
 
 - payloads: `1 KB` to `64 KB`
@@ -55,6 +61,7 @@ The point of the comparison is not to crown one universal winner. It is to ident
 - `/proc/softirqs`
 - `sar -n DEV`
 - NIC vendor counters
+- `bpftrace` guardian and latency-preemption scripts for bounded-autonomy validation
 
 ## Success Criteria
 
@@ -62,6 +69,8 @@ The point of the comparison is not to crown one universal winner. It is to ident
 - lower CPU cost on Class B hot services
 - clear throughput and CPU win on Class C bulk movement
 - stable behavior under burst and fan-out
+- `AF_XDP` must not regress sub-`512 B` p99 latency relative to Path A without a clearly justified CPU savings story
+- guardian intervention must be shown not to violate tail-latency SLOs on protected service classes
 
 ## Reporting Format
 
@@ -92,3 +101,16 @@ Then repeat for:
 1. `bnxt_en` + kernel TCP
 2. `bnxt_en` + XDP path if supported as needed
 3. `bnxt_re` for RoCE bulk path
+
+## Guardian Validation Addendum
+
+The repo should not claim safe bounded autonomy without showing observability around guardian intervention. Minimum evidence:
+
+- trace when guardian decisions preempt or clamp dataplane actions
+- correlate intervention windows with service latency histograms
+- prove fail-safe entry does not destroy protected control-plane traffic
+
+Starter scripts live in:
+
+- [`../tools/bpftrace/guardian_preemption.bt`](../tools/bpftrace/guardian_preemption.bt)
+- [`../tools/bpftrace/guardian_tail_latency_guard.bt`](../tools/bpftrace/guardian_tail_latency_guard.bt)

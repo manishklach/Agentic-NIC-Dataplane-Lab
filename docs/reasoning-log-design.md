@@ -55,6 +55,23 @@ Possible trust anchors:
 - hash-chained event segments
 - periodic host-visible checkpoints with integrity metadata
 
+## Read Access Question
+
+One of the most important unresolved operational questions is simple:
+
+`Who can read the reasoning logs?`
+
+The recommended answer is:
+
+- platform operators can read raw logs
+- verification tooling can validate integrity
+- tenants should receive only filtered or tenant-scoped exports
+- ordinary host processes should not gain blanket raw-log access
+
+The fuller threat model for that read path lives in:
+
+- [`./audit-layer-threat-model.md`](./audit-layer-threat-model.md)
+
 ## Minimal Patent-Relevant Claim Shape
 
 A strong claim direction is not just “the NIC logs events.” It is:

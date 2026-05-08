@@ -1,0 +1,63 @@
+#!/usr/bin/env bpftrace
+
+/*
+ * Illustrative bpftrace script for validating that a guardian preemption path
+ * is firing before tail-latency violations stack up. The exact tracepoints or
+ * uprobes will vary with the real implementation.
+ *
+ * Usage example:
+ *   sudo bpftrace tools/bpftrace/guardian_preemption.bt
+ *
+ * Suggested future integration points:
+ * - uprobes on a user-space guardian daemon
+ * - kprobes on NIC control-path ioctls or netlink handlers
+ * - tracepoints on queueing discipline mutations
+ */
+
+BEGIN
+{
+  printf("guardian preemption tracer started\n");
+}
+
+tracepoint:net:netif_receive_skb
+/args->len <= 512/
+{
+  @small_rx_pkts = count();
+}
+
+tracepoint:irq:softirq_raise
+{
+  @softirq_raise[args->vec] = count();
+}
+
+tracepoint:irq:softirq_entry
+{
+  @softirq_entry[args->vec] = count();
+}
+
+tracepoint:sched:sched_wakeup
+/comm == "guardiand"/
+{
+  @guardian_wakeups = count();
+}
+
+tracepoint:sched:sched_switch
+/prev_comm == "guardiand" || next_comm == "guardiand"/
+{
+  @guardian_switches = count();
+}
+
+interval:s:5
+{
+  printf("\n--- guardian preemption snapshot ---\n");
+  print(@small_rx_pkts);
+  print(@guardian_wakeups);
+  print(@guardian_switches);
+  print(@softirq_raise);
+  print(@softirq_entry);
+  clear(@small_rx_pkts);
+  clear(@guardian_wakeups);
+  clear(@guardian_switches);
+  clear(@softirq_raise);
+  clear(@softirq_entry);
+}
