@@ -20,6 +20,7 @@ sudo apt-get install -y \
   clang \
   llvm \
   pkg-config \
+  libxdp-dev \
   libbpf-dev \
   libibverbs-dev \
   liburing-dev \
@@ -48,7 +49,7 @@ Artifacts are written to `./build/`.
 
 ## Notes
 
-- `AF_XDP` userspace code links against `libbpf`
+- `AF_XDP` userspace code prefers `libxdp` where packaged, and falls back to older `libbpf`-provided AF_XDP helpers when available
 - the `RDMA` userspace sample links against `libibverbs`
 - the `io_uring` sample links against `liburing`
 - the XDP sample compiles as an eBPF object with `clang -target bpf`

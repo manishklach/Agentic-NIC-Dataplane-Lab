@@ -12,7 +12,17 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <bpf/xsk.h>
+#if defined(__has_include)
+#  if __has_include(<xdp/xsk.h>)
+#    include <xdp/xsk.h>
+#  elif __has_include(<bpf/xsk.h>)
+#    include <bpf/xsk.h>
+#  else
+#    error "AF_XDP userspace headers not found; install libxdp-dev or libbpf headers with xsk.h"
+#  endif
+#else
+#  include <bpf/xsk.h>
+#endif
 
 #define FRAME_SIZE XSK_UMEM__DEFAULT_FRAME_SIZE
 #define NUM_FRAMES 4096
