@@ -2,6 +2,18 @@
 
 This repo recommends a `tri-path` Linux networking architecture for agentic AI clusters.
 
+## Problem Statement
+
+Agentic AI traffic does not look like a single long-lived inference stream. It is usually a mix of:
+
+- small control-plane RPCs
+- bursty retrieval requests
+- metadata-heavy calls
+- streaming responses
+- periodic bulk state movement
+
+One transport path rarely fits all of those shapes well. The architecture here separates them intentionally instead of forcing every flow into the same network stack.
+
 ## Design Goal
 
 Keep the kernel where it helps, bypass it where it hurts, and reserve RDMA for the flows that can actually use it well.
@@ -30,6 +42,14 @@ Why:
 - better compatibility with existing service frameworks
 - lower engineering risk for the majority path
 
+Watch for:
+
+- softirq saturation
+- queue imbalance
+- TLS termination CPU cost
+- cross-NUMA wakeups
+- copy amplification between userland services
+
 ## Path B: AF_XDP Fast Path
 
 Use this for:
@@ -53,6 +73,14 @@ Why:
 - reduced copy and syscall cost
 - stronger control of queue-to-core placement
 
+Watch for:
+
+- UMEM sizing mistakes
+- refill starvation
+- hidden wakeup cost
+- XDP redirect complexity
+- operational friction versus normal sockets
+
 ## Path C: RDMA Bulk Path
 
 Use this for:
@@ -75,6 +103,14 @@ Why:
 - lower CPU cost for bulk movement
 - low latency under stable flow patterns
 - strong throughput once setup costs are amortized
+
+Watch for:
+
+- memory registration overhead
+- congestion on RoCE fabrics
+- peer exchange complexity
+- poor fit for tiny RPCs
+- operational burden if only a small fraction of flows benefit
 
 ## What Not To Do
 
@@ -115,3 +151,11 @@ Best fit when you want one Linux-first stack that spans:
 - RDMA path: `bnxt_re`
 
 Best fit when your environment is already aligned around Broadcom firmware, tooling, and RoCE validation.
+
+## Decision Rule
+
+Use this rough rule when classifying a flow:
+
+- if the flow is latency-sensitive, request-response oriented, and benefits from normal service semantics, keep it on Path A
+- if the flow is packet-hot, queue-stable, and CPU-expensive in the host stack, consider Path B
+- if the flow is bulk, repeated, and east-west, consider Path C

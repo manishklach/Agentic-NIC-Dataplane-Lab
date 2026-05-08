@@ -1,10 +1,23 @@
 #include <errno.h>
+#include <linux/if_link.h>
 #include <net/if.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <linux/if_xdp.h>
+
+/*
+ * Minimal AF_XDP userspace skeleton.
+ *
+ * This sample intentionally stops after socket bring-up so contributors can
+ * focus on one concern at a time. The next implementation step should add:
+ * - UMEM allocation and registration
+ * - fill and completion ring sizing
+ * - RX/TX ring setup
+ * - XDP_USE_NEED_WAKEUP evaluation
+ * - packet drain and refill loop
+ */
 
 int main(int argc, char **argv)
 {
@@ -33,8 +46,10 @@ int main(int argc, char **argv)
     /*
      * Real bring-up still needs:
      * - UMEM allocation and registration
+     * - frame size and headroom decisions
      * - fill/completion ring setup
      * - RX/TX ring mmap
+     * - optional XDP_USE_NEED_WAKEUP testing
      * - an attached XDP program that redirects into this socket
      */
     if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {

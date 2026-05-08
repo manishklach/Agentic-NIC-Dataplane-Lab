@@ -10,6 +10,8 @@ The point of this benchmark plan is to compare networking paths under `agent-sha
 4. `AF_XDP` on selected queues
 5. `RDMA` for bulk lanes
 
+The point of the comparison is not to crown one universal winner. It is to identify which path wins for which workload shape and at what operational cost.
+
 ## Workload Classes
 
 ### Class A: Agent RPC
@@ -18,6 +20,7 @@ The point of this benchmark plan is to compare networking paths under `agent-sha
 - request fan-out: `1` to `32`
 - response streaming: optional
 - focus: tail latency and CPU cost
+- likely path winner: kernel TCP, then `io_uring` where supported
 
 ### Class B: Retrieval / Memory Service
 
@@ -25,12 +28,14 @@ The point of this benchmark plan is to compare networking paths under `agent-sha
 - mixed reads and writes
 - bursty arrivals
 - focus: queue pressure and copy overhead
+- likely path winner: kernel TCP or `AF_XDP`, depending on service heat and queue stability
 
 ### Class C: Bulk East-West State
 
 - payloads: `64 KB` to `4 MB`
 - repeated transfer patterns
 - focus: throughput and host CPU per GB
+- likely path winner: `RDMA` if setup and fabric costs are acceptable
 
 ## Test Variables
 
