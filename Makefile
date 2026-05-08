@@ -4,6 +4,7 @@ CFLAGS ?= -Wall -Wextra -Werror -O2 -g
 PKG_CONFIG ?= pkg-config
 
 BUILD_DIR := build
+MULTIARCH_INC := /usr/include/$(shell $(CC) -print-multiarch 2>/dev/null)
 
 LIBBPF_CFLAGS := $(shell $(PKG_CONFIG) --cflags libbpf 2>/dev/null)
 LIBBPF_LIBS := $(shell $(PKG_CONFIG) --libs libbpf 2>/dev/null)
@@ -44,7 +45,7 @@ rdma: $(BUILD_DIR) check-libibverbs
 	$(CC) $(CFLAGS) $(LIBIBVERBS_CFLAGS) src/rdma/verbs_ping.c -o $(BUILD_DIR)/verbs_ping $(LIBIBVERBS_LIBS)
 
 xdp_prog: $(BUILD_DIR) check-clang
-	$(CLANG) -O2 -g -target bpf -c src/af_xdp/xdp_pass.c -o $(BUILD_DIR)/xdp_pass.o
+	$(CLANG) -O2 -g -target bpf -I$(MULTIARCH_INC) -c src/af_xdp/xdp_pass.c -o $(BUILD_DIR)/xdp_pass.o
 
 clean:
 	rm -rf $(BUILD_DIR)
