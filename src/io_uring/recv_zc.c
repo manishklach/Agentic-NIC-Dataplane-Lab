@@ -55,6 +55,7 @@ int main(int argc, char **argv)
     char buf[4096];
     int sockfd;
     int ret;
+    bool using_recv_zc = false;
     unsigned short port = argc > 1 ? (unsigned short)atoi(argv[1]) : 9000;
 
     memset(&params, 0, sizeof(params));
@@ -81,7 +82,17 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    io_uring_prep_recv_zc(sqe, sockfd, buf, sizeof(buf), 0, 0);
+    /*
+     * Some CI environments ship a liburing that has RECV_ZC opcode support in
+     * the kernel headers but not the newer io_uring_prep_recv_zc() helper.
+     * Build the SQE using io_uring_prep_recv() first, then upgrade the opcode
+     * when RECV_ZC is available at compile time.
+     */
+    io_uring_prep_recv(sqe, sockfd, buf, sizeof(buf), 0);
+#ifdef IORING_OP_RECV_ZC
+    sqe->opcode = IORING_OP_RECV_ZC;
+    using_recv_zc = true;
+#endif
     sqe->user_data = 1;
 
     ret = io_uring_submit(&ring);
@@ -106,7 +117,12 @@ int main(int argc, char **argv)
      * - a later notification CQE reports zero-copy buffer lifecycle status
      * - both must be consumed correctly
      */
-    printf("recv_zc completion: res=%d flags=0x%x\n", cqe->res, cqe->flags);
+    printf(
+        "%s completion: res=%d flags=0x%x\n",
+        using_recv_zc ? "recv_zc" : "recv",
+        cqe->res,
+        cqe->flags
+    );
     io_uring_cqe_seen(&ring, cqe);
 
     close(sockfd);
