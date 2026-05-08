@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "label": "intel-e810-baseline",
+    "captured_on": "2026-05-08",
+    "nic": "Intel E810",
+    "driver_stack": {
+      "tcp": "ice",
+      "af_xdp": "ice",
+      "rdma": "irdma"
+    },
+    "message_sizes_bytes": [64, 256, 1024, 4096, 8192],
+    "core_counts": [1, 2, 4, 8, 16, 32],
+    "notes": [
+      "Illustrative baseline artifact for plotting and repo structure.",
+      "Replace with real hardware measurements before using for decision-making."
+    ]
+  },
+  "results": [
+    {"path":"tcp","cores":1,"size_bytes":64,"p99_us":48.0,"throughput_gbps":0.9,"cpu_per_gbps":78.0},
+    {"path":"tcp","cores":1,"size_bytes":256,"p99_us":55.0,"throughput_gbps":2.8,"cpu_per_gbps":66.0},
+    {"path":"tcp","cores":1,"size_bytes":1024,"p99_us":71.0,"throughput_gbps":5.9,"cpu_per_gbps":48.0},
+    {"path":"tcp","cores":1,"size_bytes":4096,"p99_us":112.0,"throughput_gbps":8.1,"cpu_per_gbps":34.0},
+    {"path":"tcp","cores":1,"size_bytes":8192,"p99_us":141.0,"throughput_gbps":9.0,"cpu_per_gbps":31.0},
+
+    {"path":"af_xdp","cores":1,"size_bytes":64,"p99_us":24.0,"throughput_gbps":1.7,"cpu_per_gbps":39.0},
+    {"path":"af_xdp","cores":1,"size_bytes":256,"p99_us":28.0,"throughput_gbps":4.3,"cpu_per_gbps":31.0},
+    {"path":"af_xdp","cores":1,"size_bytes":1024,"p99_us":39.0,"throughput_gbps":8.2,"cpu_per_gbps":23.0},
+    {"path":"af_xdp","cores":1,"size_bytes":4096,"p99_us":67.0,"throughput_gbps":11.6,"cpu_per_gbps":18.0},
+    {"path":"af_xdp","cores":1,"size_bytes":8192,"p99_us":88.0,"throughput_gbps":13.0,"cpu_per_gbps":16.0},
+
+    {"path":"rdma","cores":1,"size_bytes":64,"p99_us":33.0,"throughput_gbps":1.3,"cpu_per_gbps":42.0},
+    {"path":"rdma","cores":1,"size_bytes":256,"p99_us":30.0,"throughput_gbps":4.8,"cpu_per_gbps":24.0},
+    {"path":"rdma","cores":1,"size_bytes":1024,"p99_us":27.0,"throughput_gbps":10.3,"cpu_per_gbps":12.0},
+    {"path":"rdma","cores":1,"size_bytes":4096,"p99_us":29.0,"throughput_gbps":21.5,"cpu_per_gbps":6.8},
+    {"path":"rdma","cores":1,"size_bytes":8192,"p99_us":31.0,"throughput_gbps":25.0,"cpu_per_gbps":5.9},
+
+    {"path":"tcp","cores":2,"size_bytes":64,"p99_us":42.0,"throughput_gbps":1.6,"cpu_per_gbps":73.0},
+    {"path":"tcp","cores":2,"size_bytes":256,"p99_us":48.0,"throughput_gbps":5.3,"cpu_per_gbps":60.0},
+    {"path":"tcp","cores":2,"size_bytes":1024,"p99_us":64.0,"throughput_gbps":10.8,"cpu_per_gbps":43.0},
+    {"path":"tcp","cores":2,"size_bytes":4096,"p99_us":102.0,"throughput_gbps":15.2,"cpu_per_gbps":30.0},
+    {"path":"tcp","cores":2,"size_bytes":8192,"p99_us":131.0,"throughput_gbps":17.1,"cpu_per_gbps":27.0},
+
+    {"path":"af_xdp","cores":2,"size_bytes":64,"p99_us":21.0,"throughput_gbps":3.1,"cpu_per_gbps":35.0},
+    {"path":"af_xdp","cores":2,"size_bytes":256,"p99_us":24.0,"throughput_gbps":8.4,"cpu_per_gbps":27.0},
+    {"path":"af_xdp","cores":2,"size_bytes":1024,"p99_us":33.0,"throughput_gbps":15.7,"cpu_per_gbps":21.0},
+    {"path":"af_xdp","cores":2,"size_bytes":4096,"p99_us":56.0,"throughput_gbps":22.4,"cpu_per_gbps":16.0},
+    {"path":"af_xdp","cores":2,"size_bytes":8192,"p99_us":73.0,"throughput_gbps":24.9,"cpu_per_gbps":14.0},
+
+    {"path":"rdma","cores":2,"size_bytes":64,"p99_us":28.0,"throughput_gbps":2.7,"cpu_per_gbps":37.0},
+    {"path":"rdma","cores":2,"size_bytes":256,"p99_us":26.0,"throughput_gbps":8.7,"cpu_per_gbps":22.0},
+    {"path":"rdma","cores":2,"size_bytes":1024,"p99_us":24.0,"throughput_gbps":18.5,"cpu_per_gbps":10.0},
+    {"path":"rdma","cores":2,"size_bytes":4096,"p99_us":26.0,"throughput_gbps":34.2,"cpu_per_gbps":5.7},
+    {"path":"rdma","cores":2,"size_bytes":8192,"p99_us":28.0,"throughput_gbps":39.0,"cpu_per_gbps":5.1},
+
+    {"path":"tcp","cores":4,"size_bytes":64,"p99_us":39.0,"throughput_gbps":3.0,"cpu_per_gbps":69.0},
+    {"path":"tcp","cores":4,"size_bytes":256,"p99_us":44.0,"throughput_gbps":9.9,"cpu_per_gbps":55.0},
+    {"path":"tcp","cores":4,"size_bytes":1024,"p99_us":57.0,"throughput_gbps":19.3,"cpu_per_gbps":39.0},
+    {"path":"tcp","cores":4,"size_bytes":4096,"p99_us":93.0,"throughput_gbps":28.0,"cpu_per_gbps":27.0},
+    {"path":"tcp","cores":4,"size_bytes":8192,"p99_us":119.0,"throughput_gbps":31.1,"cpu_per_gbps":24.0},
+
+    {"path":"af_xdp","cores":4,"size_bytes":64,"p99_us":18.0,"throughput_gbps":5.9,"cpu_per_gbps":31.0},
+    {"path":"af_xdp","cores":4,"size_bytes":256,"p99_us":22.0,"throughput_gbps":15.2,"cpu_per_gbps":24.0},
+    {"path":"af_xdp","cores":4,"size_bytes":1024,"p99_us":28.0,"throughput_gbps":28.1,"cpu_per_gbps":19.0},
+    {"path":"af_xdp","cores":4,"size_bytes":4096,"p99_us":47.0,"throughput_gbps":41.5,"cpu_per_gbps":14.0},
+    {"path":"af_xdp","cores":4,"size_bytes":8192,"p99_us":61.0,"throughput_gbps":49.6,"cpu_per_gbps":12.0},
+
+    {"path":"rdma","cores":4,"size_bytes":64,"p99_us":25.0,"throughput_gbps":5.1,"cpu_per_gbps":33.0},
+    {"path":"rdma","cores":4,"size_bytes":256,"p99_us":24.0,"throughput_gbps":16.3,"cpu_per_gbps":19.0},
+    {"path":"rdma","cores":4,"size_bytes":1024,"p99_us":22.0,"throughput_gbps":31.7,"cpu_per_gbps":9.0},
+    {"path":"rdma","cores":4,"size_bytes":4096,"p99_us":24.0,"throughput_gbps":57.0,"cpu_per_gbps":5.1},
+    {"path":"rdma","cores":4,"size_bytes":8192,"p99_us":26.0,"throughput_gbps":71.0,"cpu_per_gbps":4.4},
+
+    {"path":"tcp","cores":8,"size_bytes":64,"p99_us":37.0,"throughput_gbps":5.8,"cpu_per_gbps":65.0},
+    {"path":"tcp","cores":8,"size_bytes":256,"p99_us":41.0,"throughput_gbps":18.5,"cpu_per_gbps":51.0},
+    {"path":"tcp","cores":8,"size_bytes":1024,"p99_us":53.0,"throughput_gbps":34.9,"cpu_per_gbps":35.0},
+    {"path":"tcp","cores":8,"size_bytes":4096,"p99_us":88.0,"throughput_gbps":48.0,"cpu_per_gbps":24.0},
+    {"path":"tcp","cores":8,"size_bytes":8192,"p99_us":110.0,"throughput_gbps":54.2,"cpu_per_gbps":22.0},
+
+    {"path":"af_xdp","cores":8,"size_bytes":64,"p99_us":17.0,"throughput_gbps":10.8,"cpu_per_gbps":28.0},
+    {"path":"af_xdp","cores":8,"size_bytes":256,"p99_us":20.0,"throughput_gbps":28.8,"cpu_per_gbps":21.0},
+    {"path":"af_xdp","cores":8,"size_bytes":1024,"p99_us":26.0,"throughput_gbps":51.9,"cpu_per_gbps":16.0},
+    {"path":"af_xdp","cores":8,"size_bytes":4096,"p99_us":43.0,"throughput_gbps":76.0,"cpu_per_gbps":12.0},
+    {"path":"af_xdp","cores":8,"size_bytes":8192,"p99_us":57.0,"throughput_gbps":88.2,"cpu_per_gbps":10.0},
+
+    {"path":"rdma","cores":8,"size_bytes":64,"p99_us":24.0,"throughput_gbps":9.3,"cpu_per_gbps":30.0},
+    {"path":"rdma","cores":8,"size_bytes":256,"p99_us":23.0,"throughput_gbps":28.5,"cpu_per_gbps":17.0},
+    {"path":"rdma","cores":8,"size_bytes":1024,"p99_us":22.0,"throughput_gbps":55.6,"cpu_per_gbps":8.0},
+    {"path":"rdma","cores":8,"size_bytes":4096,"p99_us":23.0,"throughput_gbps":93.0,"cpu_per_gbps":4.7},
+    {"path":"rdma","cores":8,"size_bytes":8192,"p99_us":25.0,"throughput_gbps":114.0,"cpu_per_gbps":4.1},
+
+    {"path":"tcp","cores":16,"size_bytes":64,"p99_us":36.0,"throughput_gbps":9.6,"cpu_per_gbps":62.0},
+    {"path":"tcp","cores":16,"size_bytes":256,"p99_us":40.0,"throughput_gbps":28.4,"cpu_per_gbps":48.0},
+    {"path":"tcp","cores":16,"size_bytes":1024,"p99_us":51.0,"throughput_gbps":52.0,"cpu_per_gbps":33.0},
+    {"path":"tcp","cores":16,"size_bytes":4096,"p99_us":84.0,"throughput_gbps":70.0,"cpu_per_gbps":23.0},
+    {"path":"tcp","cores":16,"size_bytes":8192,"p99_us":107.0,"throughput_gbps":79.0,"cpu_per_gbps":21.0},
+
+    {"path":"af_xdp","cores":16,"size_bytes":64,"p99_us":16.0,"throughput_gbps":17.0,"cpu_per_gbps":26.0},
+    {"path":"af_xdp","cores":16,"size_bytes":256,"p99_us":19.0,"throughput_gbps":43.5,"cpu_per_gbps":19.0},
+    {"path":"af_xdp","cores":16,"size_bytes":1024,"p99_us":25.0,"throughput_gbps":73.0,"cpu_per_gbps":15.0},
+    {"path":"af_xdp","cores":16,"size_bytes":4096,"p99_us":42.0,"throughput_gbps":101.0,"cpu_per_gbps":11.0},
+    {"path":"af_xdp","cores":16,"size_bytes":8192,"p99_us":55.0,"throughput_gbps":112.0,"cpu_per_gbps":9.0},
+
+    {"path":"rdma","cores":16,"size_bytes":64,"p99_us":23.0,"throughput_gbps":14.8,"cpu_per_gbps":28.0},
+    {"path":"rdma","cores":16,"size_bytes":256,"p99_us":23.0,"throughput_gbps":43.2,"cpu_per_gbps":16.0},
+    {"path":"rdma","cores":16,"size_bytes":1024,"p99_us":21.0,"throughput_gbps":79.0,"cpu_per_gbps":7.0},
+    {"path":"rdma","cores":16,"size_bytes":4096,"p99_us":23.0,"throughput_gbps":117.0,"cpu_per_gbps":4.4},
+    {"path":"rdma","cores":16,"size_bytes":8192,"p99_us":24.0,"throughput_gbps":139.0,"cpu_per_gbps":3.9},
+
+    {"path":"tcp","cores":32,"size_bytes":64,"p99_us":35.0,"throughput_gbps":14.1,"cpu_per_gbps":59.0},
+    {"path":"tcp","cores":32,"size_bytes":256,"p99_us":39.0,"throughput_gbps":41.0,"cpu_per_gbps":46.0},
+    {"path":"tcp","cores":32,"size_bytes":1024,"p99_us":50.0,"throughput_gbps":69.0,"cpu_per_gbps":31.0},
+    {"path":"tcp","cores":32,"size_bytes":4096,"p99_us":82.0,"throughput_gbps":90.0,"cpu_per_gbps":22.0},
+    {"path":"tcp","cores":32,"size_bytes":8192,"p99_us":105.0,"throughput_gbps":101.0,"cpu_per_gbps":20.0},
+
+    {"path":"af_xdp","cores":32,"size_bytes":64,"p99_us":16.0,"throughput_gbps":24.0,"cpu_per_gbps":24.0},
+    {"path":"af_xdp","cores":32,"size_bytes":256,"p99_us":18.0,"throughput_gbps":57.0,"cpu_per_gbps":18.0},
+    {"path":"af_xdp","cores":32,"size_bytes":1024,"p99_us":24.0,"throughput_gbps":89.0,"cpu_per_gbps":14.0},
+    {"path":"af_xdp","cores":32,"size_bytes":4096,"p99_us":40.0,"throughput_gbps":116.0,"cpu_per_gbps":10.0},
+    {"path":"af_xdp","cores":32,"size_bytes":8192,"p99_us":52.0,"throughput_gbps":131.0,"cpu_per_gbps":8.5},
+
+    {"path":"rdma","cores":32,"size_bytes":64,"p99_us":23.0,"throughput_gbps":20.5,"cpu_per_gbps":26.0},
+    {"path":"rdma","cores":32,"size_bytes":256,"p99_us":22.0,"throughput_gbps":57.5,"cpu_per_gbps":15.0},
+    {"path":"rdma","cores":32,"size_bytes":1024,"p99_us":21.0,"throughput_gbps":96.0,"cpu_per_gbps":6.7},
+    {"path":"rdma","cores":32,"size_bytes":4096,"p99_us":22.0,"throughput_gbps":136.0,"cpu_per_gbps":4.1},
+    {"path":"rdma","cores":32,"size_bytes":8192,"p99_us":24.0,"throughput_gbps":158.0,"cpu_per_gbps":3.7}
+  ]
+}

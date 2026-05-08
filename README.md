@@ -88,6 +88,7 @@ This repo is intentionally in `early-lab` form:
 ## Repo Layout
 
 - [`./BUILDING.md`](./BUILDING.md)
+- [`./docs/networking-for-agentic-ai-blog.md`](./docs/networking-for-agentic-ai-blog.md)
 - [`./docs/reference-architecture.md`](./docs/reference-architecture.md)
 - [`./docs/agentic-nic-architecture.md`](./docs/agentic-nic-architecture.md)
 - [`./docs/safety-and-guardrails.md`](./docs/safety-and-guardrails.md)
@@ -102,6 +103,9 @@ This repo is intentionally in `early-lab` form:
 - [`./src/af_xdp/xdp_pass.c`](./src/af_xdp/xdp_pass.c)
 - [`./src/rdma/verbs_ping.c`](./src/rdma/verbs_ping.c)
 - [`./scripts/benchmark-matrix.sh`](./scripts/benchmark-matrix.sh)
+- [`./tools/af_xdp_load.sh`](./tools/af_xdp_load.sh)
+- [`./tools/plot_e810_baseline.py`](./tools/plot_e810_baseline.py)
+- [`./results/e810-baseline-2026-05-08.json`](./results/e810-baseline-2026-05-08.json)
 
 ## Vendor Recommendation
 
@@ -143,6 +147,8 @@ Example:
 ```
 
 It is still intentionally conservative: if the required generator tool is missing, it fails loudly instead of pretending a benchmark ran.
+
+The repo also now includes an illustrative baseline artifact at [`./results/e810-baseline-2026-05-08.json`](./results/e810-baseline-2026-05-08.json) plus a plotting helper at [`./tools/plot_e810_baseline.py`](./tools/plot_e810_baseline.py) so the benchmark story is grounded in a reusable result format.
 
 ## Priority Next Work
 
