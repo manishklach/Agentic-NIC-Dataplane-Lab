@@ -1,0 +1,8 @@
+*.o
+*.out
+*.a
+*.so
+*.dSYM/
+build/
+dist/
+compile_commands.json

@@ -1,0 +1,12 @@
+flowchart LR
+    U["Users / Upstream Agents"] --> I["Ingress NIC Queues"]
+    I --> C["Classifier: RSS / XDP / Flow Rules"]
+    C --> K["Path A: Kernel TCP + io_uring"]
+    C --> X["Path B: AF_XDP"]
+    C --> R["Path C: RDMA"]
+    K --> O["Orchestrators / Tools / Retrieval"]
+    X --> G["Gateways / Routers / Schedulers"]
+    R --> B["Bulk State / Checkpoints / GPU Feed"]
+    O --> S["Shared State Services"]
+    G --> S
+    B --> S
