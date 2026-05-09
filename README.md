@@ -4,6 +4,32 @@
 
 The repo is opinionated about one thing: agentic AI is not only a model problem. It is a queueing, copy-avoidance, packet-steering, east-west transport, and local-control problem. The goal here is to make those tradeoffs concrete with architecture notes, Linux tuning guidance, compatibility tables, starter code, and a stronger systems model for how an autonomous NIC dataplane could operate safely.
 
+## Five-Minute Local Demo
+
+The repo now includes a small `v0.2` local workflow so a new reader can compile the lab, run one real localhost baseline, run one honest `AF_XDP` mock path, and generate charts from the resulting JSON.
+
+```bash
+make all
+make demo
+python3 tools/plot_baseline.py results/latest.json
+```
+
+What this demo is and is not:
+
+- `Path A kernel UDP` is a real localhost kernel networking measurement using a simple echo server and client.
+- `Path B AF_XDP mock` is a workflow-validation path that simulates a starter `AF_XDP` processing loop shape and output format.
+- The local demo exists to validate build, run, JSON, and plotting workflow without special hardware.
+- Real `AF_XDP` still requires supported NIC, driver, queue, and privilege setup. The mock path does not claim real zero-copy dataplane performance.
+
+### Current Demo Status
+
+| Path | Status | Requires root | Requires special NIC |
+| --- | --- | --- | --- |
+| Path A kernel UDP | runnable locally | no | no |
+| Path B AF_XDP mock | runnable locally | no | no |
+| Path B real AF_XDP | scaffold/in progress | yes | yes |
+| Path C RDMA | scaffold/in progress | likely | yes |
+
 ## Repo Description
 
 This project explores a `tri-path` host networking model for agentic AI clusters:
@@ -88,6 +114,7 @@ This repo is intentionally in `early-lab` form:
 ## Repo Layout
 
 - [`./BUILDING.md`](./BUILDING.md)
+- [`./ROADMAP.md`](./ROADMAP.md)
 - [`./docs/networking-for-agentic-ai-blog.md`](./docs/networking-for-agentic-ai-blog.md)
 - [`./docs/reference-architecture.md`](./docs/reference-architecture.md)
 - [`./docs/agentic-nic-architecture.md`](./docs/agentic-nic-architecture.md)
@@ -100,15 +127,20 @@ This repo is intentionally in `early-lab` form:
 - [`./docs/compatibility-matrix.md`](./docs/compatibility-matrix.md)
 - [`./diagrams/tri-path-agentic-dataplane.mmd`](./diagrams/tri-path-agentic-dataplane.mmd)
 - [`./src/io_uring/recv_zc.c`](./src/io_uring/recv_zc.c)
+- [`./src/kernel_udp/udp_echo_server.c`](./src/kernel_udp/udp_echo_server.c)
+- [`./src/kernel_udp/udp_client.c`](./src/kernel_udp/udp_client.c)
 - [`./src/af_xdp/main.c`](./src/af_xdp/main.c)
 - [`./src/af_xdp/xdp_pass.c`](./src/af_xdp/xdp_pass.c)
 - [`./src/rdma/verbs_ping.c`](./src/rdma/verbs_ping.c)
+- [`./scripts/run_local_baseline.sh`](./scripts/run_local_baseline.sh)
 - [`./scripts/benchmark-matrix.sh`](./scripts/benchmark-matrix.sh)
 - [`./tools/af_xdp_load.sh`](./tools/af_xdp_load.sh)
 - [`./tools/bpftrace/guardian_preemption.bt`](./tools/bpftrace/guardian_preemption.bt)
 - [`./tools/bpftrace/guardian_tail_latency_guard.bt`](./tools/bpftrace/guardian_tail_latency_guard.bt)
+- [`./tools/plot_baseline.py`](./tools/plot_baseline.py)
 - [`./tools/plot_e810_baseline.py`](./tools/plot_e810_baseline.py)
 - [`./results/e810-baseline-2026-05-08.json`](./results/e810-baseline-2026-05-08.json)
+- [`./results/sample-local-baseline.json`](./results/sample-local-baseline.json)
 
 ## Vendor Recommendation
 
@@ -133,11 +165,15 @@ Common commands:
 
 ```bash
 make all
+make kernel_udp
 make af_xdp
 make io_uring
 make rdma
 make xdp_prog
+make demo
 ```
+
+`make all` now builds the runnable local `kernel_udp` demo path, builds the `AF_XDP` starter in real or mock-only mode depending on available headers and libraries, and skips optional `io_uring`, `RDMA`, or BPF object targets gracefully when the local environment does not provide those dependencies.
 
 ## Benchmark Harness
 
@@ -152,6 +188,24 @@ Example:
 It is still intentionally conservative: if the required generator tool is missing, it fails loudly instead of pretending a benchmark ran.
 
 The repo also now includes an illustrative baseline artifact at [`./results/e810-baseline-2026-05-08.json`](./results/e810-baseline-2026-05-08.json) plus a plotting helper at [`./tools/plot_e810_baseline.py`](./tools/plot_e810_baseline.py) so the benchmark story is grounded in a reusable result format.
+
+For the quick local workflow, use:
+
+```bash
+./scripts/run_local_baseline.sh
+python3 tools/plot_baseline.py results/latest.json
+```
+
+That local path:
+
+- runs a real localhost UDP echo benchmark for `Path A`
+- runs an `AF_XDP` mock/scaffold benchmark for `Path B`
+- writes a combined JSON file at `./results/local-baseline-YYYYMMDD-HHMMSS.json`
+- refreshes `./results/latest.json`
+- generates `./diagrams/local-baseline-throughput.png`
+- generates `./diagrams/local-baseline-latency.png` when latency fields are present
+
+A checked-in reference artifact is available at [`./results/sample-local-baseline.json`](./results/sample-local-baseline.json).
 
 The next release blockers are now called out more explicitly in the docs:
 

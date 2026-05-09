@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-05-08T19:00:00+00:00",
+  "host": "127.0.0.1",
+  "purpose": "local workflow validation for Path A vs Path B starter benchmark",
+  "notes": [
+    "kernel_udp_baseline is a real localhost UDP echo round-trip measurement",
+    "af_xdp_mock is a simulated starter path and does not claim hardware zero-copy performance",
+    "this file is a checked-in sample artifact for v0.2 documentation"
+  ],
+  "results": [
+    {
+      "mode": "kernel_udp_baseline",
+      "host": "127.0.0.1",
+      "port": 9000,
+      "packet_count": 2000,
+      "packet_size": 256,
+      "payload_bytes": 512000,
+      "elapsed_sec": 0.066712341,
+      "avg_latency_us": 31.606,
+      "p50_latency_us": 29.101,
+      "p95_latency_us": 42.800,
+      "p99_latency_us": 61.700,
+      "packets_per_sec": 29979.150,
+      "mb_per_sec": 7.319
+    },
+    {
+      "mode": "af_xdp_mock",
+      "packet_count": 2000,
+      "packet_size": 256,
+      "payload_bytes": 512000,
+      "elapsed_sec": 0.003921551,
+      "packets_per_sec": 510002.118,
+      "mb_per_sec": 124.512,
+      "estimated_copy_avoidance": true,
+      "real_af_xdp": false
+    }
+  ]
+}
