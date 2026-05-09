@@ -4,6 +4,37 @@
 
 The repo is opinionated about one thing: agentic AI is not only a model problem. It is a queueing, copy-avoidance, packet-steering, east-west transport, and local-control problem. The goal here is to make those tradeoffs concrete with architecture notes, Linux tuning guidance, compatibility tables, starter code, and a stronger systems model for how an autonomous NIC dataplane could operate safely.
 
+## Why Agentic Workloads Are Different
+
+The core thesis of this repo is that `agentic inference` is not shaped like traditional batched model serving.
+
+Traditional inference is usually:
+
+- large batch
+- GPU-bound
+- throughput-oriented
+- dominated by matrix math and model execution efficiency
+
+Agentic inference is usually:
+
+- many tiny RPCs
+- metadata fetches
+- retrieval fan-out
+- scheduler chatter
+- checkpoint or state coordination
+- latency amplification across multi-step plans
+
+That difference matters because the bottleneck moves. In a classic throughput-oriented serving path, the GPU often dominates. In an agentic path, the orchestration fabric can dominate instead:
+
+- socket and packet overhead
+- queue contention
+- kernel/userspace copy cost
+- scheduler wakeups
+- cross-service retries
+- east-west networking
+
+This repo is compelling only if that thesis holds up under measurement: at scale, networking overhead can become a first-order limiter for agent orchestration even when the model itself is fast enough.
+
 ## Five-Minute Local Demo
 
 The repo now includes a small `v0.2` local workflow so a new reader can compile the lab, run one real localhost baseline, run one honest `AF_XDP` mock path, and generate charts from the resulting JSON.
@@ -101,6 +132,14 @@ That shifts bottlenecks toward:
 - memory registration and pinned-page cost
 - east-west service traffic
 
+## Research Questions
+
+- At what packet size and concurrency does `AF_XDP` outperform kernel sockets for agent RPC traffic?
+- Can queue affinity reduce `p99` scheduler jitter for agent orchestration paths?
+- Does `busy_poll` help or hurt mixed inference workloads that combine model serving with retrieval chatter?
+- When does userspace polling become CPU-inefficient relative to kernel sockets?
+- Can bounded autonomous NIC scheduling reduce tail collapse without violating safety constraints?
+
 ## Current Status
 
 This repo is intentionally in `early-lab` form:
@@ -125,6 +164,7 @@ This repo is intentionally in `early-lab` form:
 - [`./docs/kernel-driver-tuning.md`](./docs/kernel-driver-tuning.md)
 - [`./docs/benchmark-plan.md`](./docs/benchmark-plan.md)
 - [`./docs/compatibility-matrix.md`](./docs/compatibility-matrix.md)
+- [`./docs/perf-flamegraph-workflow.md`](./docs/perf-flamegraph-workflow.md)
 - [`./diagrams/tri-path-agentic-dataplane.mmd`](./diagrams/tri-path-agentic-dataplane.mmd)
 - [`./src/io_uring/recv_zc.c`](./src/io_uring/recv_zc.c)
 - [`./src/kernel_udp/udp_echo_server.c`](./src/kernel_udp/udp_echo_server.c)
@@ -137,6 +177,7 @@ This repo is intentionally in `early-lab` form:
 - [`./tools/af_xdp_load.sh`](./tools/af_xdp_load.sh)
 - [`./tools/bpftrace/guardian_preemption.bt`](./tools/bpftrace/guardian_preemption.bt)
 - [`./tools/bpftrace/guardian_tail_latency_guard.bt`](./tools/bpftrace/guardian_tail_latency_guard.bt)
+- [`./tools/perf_capture.sh`](./tools/perf_capture.sh)
 - [`./tools/plot_baseline.py`](./tools/plot_baseline.py)
 - [`./tools/plot_e810_baseline.py`](./tools/plot_e810_baseline.py)
 - [`./results/e810-baseline-2026-05-08.json`](./results/e810-baseline-2026-05-08.json)
@@ -212,6 +253,25 @@ The next release blockers are now called out more explicitly in the docs:
 - prove Path B is not worse than Path A for sub-`512 B` RPCs
 - show guardian intervention does not violate tail-latency SLOs
 - define exactly who can read the reasoning logs and under what trust model
+
+## Perf And Flamegraphs
+
+The repo now includes a small profiling helper at [`./tools/perf_capture.sh`](./tools/perf_capture.sh) plus a workflow note in [`./docs/perf-flamegraph-workflow.md`](./docs/perf-flamegraph-workflow.md).
+
+Example:
+
+```bash
+sudo ./tools/perf_capture.sh --output-dir perf/local-demo -- ./build/udp_client --host 127.0.0.1 --port 9000 --packet-size 256 --count 2000
+```
+
+This is intentionally lightweight:
+
+- it captures `perf record` data for a target command
+- emits `perf report` text
+- emits `perf script` output
+- optionally emits folded stacks and a flamegraph SVG when Brendan Gregg `FlameGraph` scripts are available locally
+
+Even a simple `softirq vs userspace polling` profile is valuable here, because it turns the repo from architecture opinion into an instrumentable lab.
 
 ## Priority Next Work
 
